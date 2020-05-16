@@ -1,6 +1,7 @@
-import {View, Text, Button, ScrollView, TextInput, StyleSheet} from 'react-native';
+import {View, Text, Button, ScrollView, TextInput, TouchableHighlight, Switch, StyleSheet} from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import React from 'react';
+import DatePicker from 'react-native-datepicker'
 import { Constants } from 'expo';
 
 let id = 0;
@@ -26,17 +27,21 @@ const Todo = props => (
         <CheckBox 
         onPress = {props.onChecked} checked = {props.todo.checked}
         />
+        {/* <Switch
+        value={props.todo.checked}
+        onValueChange={props.toggleTask}
+      /> */}
         <Text>{props.todo.text}</Text>
         <Button onPress = {props.onDelete} title = "delete" />
     </View>
 );
 
 export default class TodoApp extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             inputTask: '',
-            dueDate: '',
+            date: '',
             todos: [],
         };
     }
@@ -70,9 +75,13 @@ export default class TodoApp extends React.Component {
             todos : [...this.state.todos, 
                 {id: id++, text: text1, checked: false}],
             inputTask: '',
-            dueDate: '',
+            date: '',
         })
     }
+
+    handleDateChange = (date) => {
+        this.setState({ date: date })
+      }
 
     render() {
         return (
@@ -96,9 +105,31 @@ export default class TodoApp extends React.Component {
             {/* <Text> Enter Task Details : </Text> */}
             <TextInput id = "inputTask" onChangeText = { (inputTask) => this.setState({inputTask}) } value = {this.state.inputTask} placeholder='Enter Task Details' />
             <Text>DueDate Details : </Text>
-            <TextInput type = "date"  id = "dueDate"  onChangeText = { (dueDate) => this.setState({dueDate}) } value = {this.state.dueDate} placeholder='Enter Due date Details '/>
+            {/* <TextInput type = "date"  id = "dueDate"  onChangeText = { (dueDate) => this.setState({dueDate}) } value = {this.state.dueDate} placeholder='Enter Due date Details '/> */}
+            {/* <View> */}
+
+
+            <DatePicker
+            style={{ width: 200 }}
+            minDate={new Date()}
+            format="MMMM D, YYYY"
+            date={this.state.date}
+            placeholder='Select Due Date'
+            duration={10}
+            onDateChange={this.handleDateChange}
+            value = {this.state.date}
+            // onDateChange = { (dueDate) => this.setState({dueDate}) }
+            customStyles={{
+              placeholderText: {
+                fontSize: 15,
+                color: '#234456'
+              }
+            }}
+          />
+            {/* </View> */}
+
             <Button onPress = {() => this.addTodo(this.state.inputTask 
-            + this.state.dueDate)} title = "Add Task" />
+            + this.state.date)} title = "Add Task" />
         </View>
         );
     }
